@@ -1,0 +1,12 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "wsl",
+            "args": [
+                "/usr/bin/php",
+                "/home/mishaa/dev/frag/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

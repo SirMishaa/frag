@@ -1,0 +1,8 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": ["/home/mishaa/dev/frag/artisan", "boost:mcp"]
+        }
+    }
+}
