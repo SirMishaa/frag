@@ -1,5 +1,6 @@
 <?php
 
+use App\MimeType;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,7 +16,13 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('share', function () {
-    return Inertia::render('ShareCode');
+
+    $user = auth()->user();
+
+    return Inertia::render('ShareCode', [
+        'allowedMimeTypes' => MimeType::cases(),
+        'recentFragFiles' => $user?->fragFiles()->latest()->limit(10)->get(),
+    ]);
 })->middleware(['auth', 'verified'])->name('share.view');
 
 Route::post('share/code', function () {
