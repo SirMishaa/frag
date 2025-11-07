@@ -12,15 +12,15 @@
         "php": "^8.4",
         "inertiajs/inertia-laravel": "^2.0.10",
         "laravel/fortify": "^1.31.2",
-        "laravel/framework": "^12.36.1",
+        "laravel/framework": "^12.37.0",
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.12"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6.0",
         "fakerphp/faker": "^1.24.1",
-        "larastan/larastan": "^3.0",
-        "laravel/boost": "^1.6.0",
+        "larastan/larastan": "^3.8.0",
+        "laravel/boost": "^1.7.1",
         "laravel/pail": "^1.2.3",
         "laravel/pint": "^1.25.1",
         "laravel/sail": "^1.47.0",

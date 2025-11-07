@@ -14,6 +14,19 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('share', function () {
+    return Inertia::render('ShareCode');
+})->middleware(['auth', 'verified'])->name('share.view');
+
+Route::post('share/code', function () {
+    // TODO: Handle code file upload
+    return back()->with('success', 'Code uploaded successfully');
+})->middleware(['auth', 'verified'])->name('share.code');
+
+Route::post('share/file', [App\Http\Controllers\FileController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('share.file');
+
 Route::get('/.well-known/appspecific/com.chrome.devtools.json', function () {
     if (app()->environment('local')) {
         return redirect()->away('http://localhost:5173/.well-known/appspecific/com.chrome.devtools.json', 307);
