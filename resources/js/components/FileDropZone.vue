@@ -24,7 +24,7 @@ const emit = defineEmits<{
     'update:modelValue': [value: string];
 }>();
 
-const fileInputRef = ref<HTMLInputElement | null>(null);
+const fileInputRef = ref<InstanceType<typeof Input> | null>(null);
 const isDragging = ref(false);
 const fileName = ref(props.modelValue);
 
@@ -54,7 +54,15 @@ const handleDrop = (event: DragEvent) => {
     if (files && files.length > 0 && fileInputRef.value) {
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(files[0]);
-        fileInputRef.value.files = dataTransfer.files;
+
+        // Access the underlying input element and set its files
+        const inputElement = fileInputRef.value.$el;
+        inputElement.files = dataTransfer.files;
+
+        // Trigger the event changes so that the browser updates the validation
+        const changeEvent = new Event('change', { bubbles: true });
+        inputElement.dispatchEvent(changeEvent);
+
         fileName.value = files[0].name;
         emit('update:modelValue', files[0].name);
     }
@@ -63,7 +71,8 @@ const handleDrop = (event: DragEvent) => {
 const reset = () => {
     fileName.value = '';
     if (fileInputRef.value) {
-        fileInputRef.value.value = '';
+        const inputElement = fileInputRef.value.$el as HTMLInputElement;
+        inputElement.files = null;
     }
     emit('update:modelValue', '');
 };

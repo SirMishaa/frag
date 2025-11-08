@@ -159,7 +159,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                     </div>
 
                     <div
-                        class="flex items-center gap-3 text-xs text-muted-foreground"
+                        class="flex items-center gap-x-1.5 gap-y-3 text-xs text-muted-foreground"
                     >
                         <span>{{ formatDate(file.created_at) }}</span>
                         <span class="text-muted-foreground/50">•</span>
@@ -168,6 +168,13 @@ const getFileTypeLabel = (mimeType: string): string => {
                         <span class="capitalize">{{
                             getFileTypeLabel(file.mime_type)
                         }}</span>
+                        <template v-if="file.checksum">
+                            <span class="text-muted-foreground/50">•</span>
+                            <small
+                                class="text-[.65rem] text-muted-foreground/40"
+                                >{{ file.checksum }}</small
+                            >
+                        </template>
                     </div>
                 </div>
             </a>
