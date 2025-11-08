@@ -95,6 +95,7 @@ export interface FragFile {
     filename: string;
     path: string;
     mime_type: MimeType;
+    checksum: string | null;
     size: number;
     created_at: string | null;
     updated_at: string | null;

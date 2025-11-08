@@ -29,6 +29,7 @@ class FragFile extends Model
         'path',
         'mime_type',
         'size',
+        'checksum',
     ];
 
     /**

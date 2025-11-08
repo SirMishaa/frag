@@ -31,6 +31,7 @@ class FragFileFactory extends Factory
             'path' => 'user_'.fake()->randomNumber().'/'.$filename,
             'mime_type' => $mimeType,
             'size' => fake()->numberBetween(1024, 20971520), // 1KB to 20MB
+            'checksum' => fake()->sha256(),
         ];
     }
 }

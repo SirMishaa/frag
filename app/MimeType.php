@@ -10,6 +10,7 @@ enum MimeType: string
     case Jpg = 'image/jpeg';
     case Gif = 'image/gif';
     case Mp4 = 'video/mp4';
+    case Webp = 'image/webp';
 
     public function extension(): string
     {
@@ -18,6 +19,7 @@ enum MimeType: string
             self::Jpg => 'jpg',
             self::Gif => 'gif',
             self::Mp4 => 'mp4',
+            self::Webp => 'webp',
         };
     }
 
@@ -28,6 +30,7 @@ enum MimeType: string
             'jpg', 'jpeg' => self::Jpg,
             'gif' => self::Gif,
             'mp4' => self::Mp4,
+            'webp' => self::Webp,
             default => null,
         };
     }
