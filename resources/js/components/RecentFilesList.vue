@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ShareButton from '@/components/ShareButton.vue';
 import type { FragFile } from '@/types';
 
 interface Props {
@@ -69,12 +70,9 @@ const getFileTypeLabel = (mimeType: string): string => {
 
         <!-- Files grid -->
         <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            <a
+            <div
                 v-for="file in files"
                 :key="file.id"
-                :href="'storage/' + file.path"
-                target="_blank"
-                rel="noopener noreferrer"
                 class="group flex items-start gap-4 rounded-xl border border-sidebar-border/70 bg-card p-4 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-sidebar-border dark:hover:border-primary/50"
             >
                 <!-- File icon based on mime type -->
@@ -138,24 +136,14 @@ const getFileTypeLabel = (mimeType: string): string => {
                 <!-- File info -->
                 <div class="flex min-w-0 flex-1 flex-col gap-1">
                     <div class="flex items-start justify-between gap-2">
-                        <p
-                            class="truncate text-sm font-medium text-foreground transition-colors group-hover:text-primary"
+                        <a
+                            :href="'storage/' + file.path"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="truncate text-sm font-medium text-foreground transition-colors hover:text-primary hover:underline"
                         >
                             {{ file.filename }}
-                        </p>
-                        <svg
-                            class="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                        </svg>
+                        </a>
                     </div>
 
                     <div
@@ -177,7 +165,12 @@ const getFileTypeLabel = (mimeType: string): string => {
                         </template>
                     </div>
                 </div>
-            </a>
+
+                <!-- Share button -->
+                <div class="flex shrink-0 items-center">
+                    <ShareButton :file="file" />
+                </div>
+            </div>
         </div>
     </div>
 </template>

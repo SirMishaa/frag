@@ -184,7 +184,7 @@ const handleMediaUploadSuccess = () => {
                 <!-- Media Upload Form -->
                 <Form
                     v-if="selectedType === 'file'"
-                    :action="share.file().url"
+                    :action="share.file()"
                     method="post"
                     enctype="multipart/form-data"
                     :only="['recentFragFiles']"

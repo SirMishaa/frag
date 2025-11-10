@@ -101,8 +101,38 @@ export interface FragFile {
     updated_at: string | null;
     // relations
     user?: User;
+    links?: FragLink[];
+    // counts
+    links_count?: number;
+    // exists
+    user_exists?: boolean;
+    links_exists?: boolean;
+}
+
+const FragLinkState = {
+    Active: 'active',
+    Revoked: 'revoked',
+} as const;
+
+export type FragLinkState = (typeof FragLinkState)[keyof typeof FragLinkState];
+
+export interface FragLink {
+    // columns
+    id: number;
+    slug: string;
+    state: FragLinkState;
+    expires_at: string | null;
+    password_hash: string | null;
+    frag_file_id: number;
+    user_id: number | null;
+    created_at: string | null;
+    updated_at: string | null;
+    // relations
+    frag_file?: FragFile;
+    user?: User;
     // counts
     // exists
+    frag_file_exists?: boolean;
     user_exists?: boolean;
 }
 
