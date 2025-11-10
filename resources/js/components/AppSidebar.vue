@@ -15,15 +15,15 @@ import { dashboard } from '@/routes';
 import share from '@/routes/share';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, ShareIcon } from 'lucide-vue-next';
+import { BookOpen, Folder, ShareIcon } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
-    {
+    /*{
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
-    },
+    },*/
     {
         title: 'ShareFile',
         href: share.view(),
