@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Language;
+use App\Models\FragCode;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\FragCode>
+ * @extends Factory<FragCode>
  */
 class FragCodeFactory extends Factory
 {
@@ -22,20 +23,10 @@ class FragCodeFactory extends Factory
     {
         $language = fake()->randomElement(Language::cases());
 
-        $codeExamples = [
-            Language::Php => '<?php\n\nfunction hello() {\n    return "Hello World";\n}',
-            Language::JavaScript => 'function hello() {\n    return "Hello World";\n}',
-            Language::Python => 'def hello():\n    return "Hello World"',
-            Language::Html => '<div>\n    <h1>Hello World</h1>\n</div>',
-            Language::Css => '.container {\n    display: flex;\n    color: blue;\n}',
-        ];
-
-        $code = $codeExamples[$language] ?? fake()->paragraphs(3, true);
-
         return [
             'user_id' => User::factory(),
             'title' => fake()->optional()->sentence(),
-            'code' => $code,
+            'code' => '<p>content</p>',
             'language' => $language,
         ];
     }

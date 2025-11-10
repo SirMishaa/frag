@@ -70,4 +70,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(FragCode::class);
     }
+
+    /**
+     * @return HasMany<FragLink, $this>
+     */
+    public function fragLinks(): HasMany
+    {
+        return $this->hasMany(FragLink::class);
+    }
 }

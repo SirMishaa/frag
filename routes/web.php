@@ -21,7 +21,11 @@ Route::get('share', function () {
 
     return Inertia::render('ShareCode', [
         'allowedMimeTypes' => MimeType::cases(),
-        'recentFragFiles' => $user?->fragFiles()->latest()->limit(10)->get(),
+        'recentFragFiles' => $user?->fragFiles()
+            ->with('links')
+            ->latest()
+            ->limit(10)
+            ->get(),
     ]);
 })->middleware(['auth', 'verified'])->name('share.view');
 
@@ -33,6 +37,13 @@ Route::post('share/code', function () {
 Route::post('share/file', [App\Http\Controllers\FileController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('share.file');
+
+Route::post('share/link', [App\Http\Controllers\FragLinkController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('share.link');
+
+Route::get('/l/{slug}', [App\Http\Controllers\FragLinkController::class, 'show'])
+    ->name('link.show');
 
 Route::get('/.well-known/appspecific/com.chrome.devtools.json', function () {
     if (app()->environment('local')) {
