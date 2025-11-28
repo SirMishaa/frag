@@ -29,10 +29,9 @@ Route::get('share', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('share.view');
 
-Route::post('share/code', function () {
-    // TODO: Handle code file upload
-    return back()->with('success', 'Code uploaded successfully');
-})->middleware(['auth', 'verified'])->name('share.code');
+Route::post('share/code', [App\Http\Controllers\FileController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('share.code');
 
 Route::post('share/file', [App\Http\Controllers\FileController::class, 'create'])
     ->middleware(['auth', 'verified'])

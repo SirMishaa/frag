@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Actions\UploadFileAction;
 use App\Exceptions\DuplicateFileException;
 use App\Models\FragFile;
+use App\Models\FragLink;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -17,11 +18,12 @@ use function Pest\Laravel\assertDatabaseHas;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
+    Storage::fake('local');
     Storage::fake('public');
     $this->action = new UploadFileAction;
 });
 
-it('successfully uploads a file and creates a FragFile record', function () {
+it('successfully uploads a file and creates a FragFile record without a shareable link created', function () {
     $user = User::factory()->create();
     $file = UploadedFile::fake()->create('test-image.png', 100, 'image/png');
 
@@ -34,12 +36,35 @@ it('successfully uploads a file and creates a FragFile record', function () {
         ->and($result->checksum)->not->toBeEmpty()
         ->and($result->user_id)->toBe($user->id);
 
-    Storage::disk('public')->assertExists($result->path);
+    Storage::disk('local')->assertExists($result->path);
 
+    expect(FragLink::where('frag_file_id', $result->id)->count())->toBe(0);
     assertDatabaseHas('frag_files', [
         'id' => $result->id,
         'filename' => 'test-image.png',
         'user_id' => $user->id,
+    ]);
+});
+
+it('creates a shareable link with expiration when expires_at is provided', function () {
+    $user = User::factory()->create();
+    $file = UploadedFile::fake()->create('test-image.png', 100, 'image/png');
+
+    $expiresAtString = now()->addDays(7)->toDateTimeString();
+    $result = $this->action->execute($file, $user, $expiresAtString);
+
+    expect($result)->toBeInstanceOf(FragFile::class)
+        ->and($result->links)->toHaveCount(1)
+        ->and($result->links->first()->expires_at->toDateTimeString())->toBe($expiresAtString)
+        ->and($result->links->first()->state)->toBe('active')
+        ->and($result->links->first()->slug)->not->toBeEmpty()
+        ->and($result->links->first()->user_id)->toBe($user->id);
+
+    assertDatabaseHas('frag_links', [
+        'frag_file_id' => $result->id,
+        'user_id' => $user->id,
+        'state' => 'active',
+        'expires_at' => $expiresAtString,
     ]);
 });
 
@@ -50,7 +75,7 @@ it('stores the file in the correct user directory', function () {
     $result = $this->action->execute($file, $user);
 
     expect($result->path)->toBe(sprintf('user_%s/image.png', $user->id));
-    Storage::disk('public')->assertExists(sprintf('user_%s/image.png', $user->id));
+    Storage::disk('local')->assertExists(sprintf('user_%s/image.png', $user->id));
 });
 
 it('computes and stores the correct SHA-256 checksum', function () {
@@ -106,7 +131,7 @@ it('throws RuntimeException when file storage fails', function () {
 
     // Mock Storage to fail
     Storage::shouldReceive('disk')
-        ->with('public')
+        ->with('local')
         ->andReturnSelf();
 
     Storage::shouldReceive('putFileAs')
@@ -152,7 +177,7 @@ it('handles files with special characters in the filename and keeps the original
     expect($result->filename)->toBe('test image (1) - copy.png')
         ->and($result->path)->toBe(sprintf('user_%s/test image (1) - copy.png', $user->id));
 
-    Storage::disk('public')->assertExists($result->path);
+    Storage::disk('local')->assertExists($result->path);
 });
 
 it('handles multiple file types correctly in a database transaction', function ($filename, $mimeType) {

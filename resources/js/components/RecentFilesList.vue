@@ -69,15 +69,15 @@ const getFileTypeLabel = (mimeType: string): string => {
         </div>
 
         <!-- Files grid -->
-        <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        <div v-else class="grid max-h-[600px] gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-1">
             <div
                 v-for="file in files"
                 :key="file.id"
-                class="group flex items-start gap-4 rounded-xl border border-sidebar-border/70 bg-card p-4 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-sidebar-border dark:hover:border-primary/50"
+                class="group flex items-start gap-3 rounded-xl border border-sidebar-border/70 bg-card p-3 shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-sidebar-border dark:hover:border-primary/50"
             >
                 <!-- File icon based on mime type -->
                 <div
-                    class="flex size-12 shrink-0 items-center justify-center rounded-lg transition-colors"
+                    class="flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors"
                     :class="[
                         file.mime_type.startsWith('image/')
                             ? 'bg-blue-500/10 text-blue-600 group-hover:bg-blue-500/20 dark:text-blue-400'
@@ -89,7 +89,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                     <!-- Image icon -->
                     <svg
                         v-if="file.mime_type.startsWith('image/')"
-                        class="size-6"
+                        class="size-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -104,7 +104,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                     <!-- Video icon -->
                     <svg
                         v-else-if="file.mime_type.startsWith('video/')"
-                        class="size-6"
+                        class="size-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -119,7 +119,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                     <!-- Generic file icon -->
                     <svg
                         v-else
-                        class="size-6"
+                        class="size-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -140,14 +140,14 @@ const getFileTypeLabel = (mimeType: string): string => {
                             :href="'storage/' + file.path"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="truncate text-sm font-medium text-foreground transition-colors hover:text-primary hover:underline"
+                            class="break-words text-sm font-medium text-foreground transition-colors hover:text-primary hover:underline"
                         >
                             {{ file.filename }}
                         </a>
                     </div>
 
                     <div
-                        class="flex items-center gap-x-1.5 gap-y-3 text-xs text-muted-foreground"
+                        class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground"
                     >
                         <span>{{ formatDate(file.created_at) }}</span>
                         <span class="text-muted-foreground/50">•</span>
@@ -159,7 +159,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                         <template v-if="file.checksum">
                             <span class="text-muted-foreground/50">•</span>
                             <small
-                                class="text-[.65rem] text-muted-foreground/40"
+                                class="break-all text-[.65rem] text-muted-foreground/40"
                                 >{{ file.checksum }}</small
                             >
                         </template>

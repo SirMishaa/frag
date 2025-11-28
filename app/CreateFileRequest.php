@@ -21,6 +21,7 @@ class CreateFileRequest extends FormRequest
 
         return [
             'file' => "required|file|max:20480|mimes:{$mimes}", // max 20MB
+            'expires_at' => 'nullable|date|after:now',
         ];
     }
 

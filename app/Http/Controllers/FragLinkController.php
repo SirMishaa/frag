@@ -8,12 +8,15 @@ use App\Http\Requests\FragLinkRequest;
 use App\Models\FragLink;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FragLinkController extends Controller
 {
-    public function show(string $slug): RedirectResponse
+    public function show(string $slug): StreamedResponse|BinaryFileResponse
     {
         $fragLink = FragLink::where('slug', $slug)->firstOrFail();
 
@@ -25,7 +28,26 @@ class FragLinkController extends Controller
             abort(Response::HTTP_GONE, 'This link has expired.');
         }
 
-        return redirect('storage/'.$fragLink->fragFile->path);
+        $fragFile = $fragLink->fragFile;
+
+        /**
+         * Try the local disk first (new files), then public disk (legacy files)
+         * Todo: refactor with file moving strategy or something like that
+         */
+        $disk = Storage::disk('local')->exists($fragFile->path) ? 'local' : 'public';
+
+        if (! Storage::disk($disk)->exists($fragFile->path)) {
+            abort(Response::HTTP_NOT_FOUND, 'File not found.');
+        }
+
+        return Storage::disk($disk)->response(
+            $fragFile->path,
+            null,
+            [
+                'Content-Type' => $fragFile->mime_type->value,
+                'Content-Disposition' => 'inline',
+            ]
+        );
     }
 
     public function store(FragLinkRequest $request): RedirectResponse

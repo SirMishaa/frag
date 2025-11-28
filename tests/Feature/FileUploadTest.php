@@ -2,11 +2,17 @@
 
 declare(strict_types=1);
 
+use App\Models\FragLink;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+uses(Tests\TestCase::class, RefreshDatabase::class);
+
 beforeEach(function () {
+    Storage::fake('local');
     Storage::fake('public');
 });
 
@@ -103,4 +109,56 @@ it('allows different users to upload the same file', function () {
     $response->assertRedirect();
     $response->assertSessionHas('success');
     expect($user2->fragFiles()->count())->toBe(1);
+});
+
+it('creates a shareable link with expiration when expires_at is provided', function () {
+    $user = User::factory()->create();
+    $file = UploadedFile::fake()->create('test.png', 100, 'image/png');
+    $expiresAt = now()->addDays(7)->format('Y-m-d\TH:i');
+
+    $response = $this
+        ->actingAs($user)
+        ->withoutMiddleware()
+        ->post('/share/file', [
+            'file' => $file,
+            'expires_at' => $expiresAt,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    expect($user->fragFiles()->count())->toBe(1);
+
+    $fragFile = $user->fragFiles()->first();
+    $fragLink = $fragFile->links()->first();
+    $expectedExpiresAt = Carbon::parse($expiresAt);
+
+    expect($fragLink)->not->toBeNull()
+        ->and($fragLink->frag_file_id)->toBe($fragFile->id)
+        ->and($fragLink->user_id)->toBe($user->id)
+        ->and($fragLink->state)->toBe('active')
+        ->and($fragLink->slug)->not->toBeEmpty()
+        ->and($fragLink->expires_at->format('Y-m-d H:i'))->toBe($expectedExpiresAt->format('Y-m-d H:i'));
+});
+
+it('does not create a shareable link when expires_at is not provided', function () {
+    $user = User::factory()->create();
+    $file = UploadedFile::fake()->create('test.png', 100, 'image/png');
+
+    $response = $this
+        ->actingAs($user)
+        ->withoutMiddleware()
+        ->post('/share/file', [
+            'file' => $file,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    expect($user->fragFiles()->count())->toBe(1);
+
+    $fragFile = $user->fragFiles()->first();
+
+    expect($fragFile->links()->count())->toBe(0);
+    expect(FragLink::where('frag_file_id', $fragFile->id)->count())->toBe(0);
 });

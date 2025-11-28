@@ -23,7 +23,8 @@ class FileController extends Controller
 
             $fragFile = $uploadAction->execute(
                 $fileRequest->file('file'),
-                $user
+                $user,
+                $fileRequest->input('expires_at')
             );
 
             return redirect()->back()->with('success', "File uploaded successfully: {$fragFile->path}");
