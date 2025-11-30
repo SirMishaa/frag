@@ -61,57 +61,57 @@ const handleMediaUploadSuccess = () => {
                 <div
                     class="flex gap-2 rounded-xl border border-sidebar-border/70 bg-card p-1.5 shadow-sm dark:border-sidebar-border"
                 >
-                        <button
-                            type="button"
-                            @click="selectedType = 'file'"
-                            :class="[
-                                'flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all',
-                                selectedType === 'file'
-                                    ? 'bg-primary text-primary-foreground shadow-sm'
-                                    : 'text-muted-foreground hover:text-foreground',
-                            ]"
+                    <button
+                        type="button"
+                        @click="selectedType = 'file'"
+                        :class="[
+                            'flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all',
+                            selectedType === 'file'
+                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground',
+                        ]"
+                    >
+                        <svg
+                            class="size-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                         >
-                            <svg
-                                class="size-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                />
-                            </svg>
-                            Share File
-                        </button>
-                        <button
-                            type="button"
-                            @click="selectedType = 'code'"
-                            :class="[
-                                'flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all',
-                                selectedType === 'code'
-                                    ? 'bg-primary text-primary-foreground shadow-sm'
-                                    : 'text-muted-foreground hover:text-foreground',
-                            ]"
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                        </svg>
+                        Share File
+                    </button>
+                    <button
+                        type="button"
+                        @click="selectedType = 'code'"
+                        :class="[
+                            'flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all',
+                            selectedType === 'code'
+                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                : 'text-muted-foreground hover:text-foreground',
+                        ]"
+                    >
+                        <svg
+                            class="size-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                         >
-                            <svg
-                                class="size-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                                />
-                            </svg>
-                            Share Code
-                        </button>
-                    </div>
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                            />
+                        </svg>
+                        Share Code
+                    </button>
+                </div>
 
                 <!-- Code Upload Form with Recent Uploads -->
                 <div
@@ -142,7 +142,10 @@ const handleMediaUploadSuccess = () => {
                                         v-model="codeFileName"
                                         required
                                     />
-                                    <InputError class="mt-2" :message="errors.file" />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="errors.file"
+                                    />
                                 </div>
 
                                 <div class="grid gap-2">
@@ -184,7 +187,11 @@ const handleMediaUploadSuccess = () => {
                                     :disabled="processing || !codeFileName"
                                     type="submit"
                                 >
-                                    {{ processing ? 'Uploading...' : 'Upload Code' }}
+                                    {{
+                                        processing
+                                            ? 'Uploading...'
+                                            : 'Upload Code'
+                                    }}
                                 </Button>
 
                                 <Transition
@@ -244,7 +251,10 @@ const handleMediaUploadSuccess = () => {
                                         v-model="mediaFileName"
                                         required
                                     />
-                                    <InputError class="mt-2" :message="errors.file" />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="errors.file"
+                                    />
                                 </div>
 
                                 <div class="grid gap-2">
@@ -286,7 +296,11 @@ const handleMediaUploadSuccess = () => {
                                     :disabled="processing || !mediaFileName"
                                     type="submit"
                                 >
-                                    {{ processing ? 'Uploading...' : 'Upload File' }}
+                                    {{
+                                        processing
+                                            ? 'Uploading...'
+                                            : 'Upload File'
+                                    }}
                                 </Button>
 
                                 <Transition

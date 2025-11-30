@@ -69,7 +69,10 @@ const getFileTypeLabel = (mimeType: string): string => {
         </div>
 
         <!-- Files grid -->
-        <div v-else class="grid max-h-[600px] gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-1">
+        <div
+            v-else
+            class="grid max-h-[600px] gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-1"
+        >
             <div
                 v-for="file in files"
                 :key="file.id"
@@ -140,7 +143,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                             :href="'storage/' + file.path"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="break-words text-sm font-medium text-foreground transition-colors hover:text-primary hover:underline"
+                            class="text-sm font-medium break-words text-foreground transition-colors hover:text-primary hover:underline"
                         >
                             {{ file.filename }}
                         </a>
@@ -159,7 +162,7 @@ const getFileTypeLabel = (mimeType: string): string => {
                         <template v-if="file.checksum">
                             <span class="text-muted-foreground/50">•</span>
                             <small
-                                class="break-all text-[.65rem] text-muted-foreground/40"
+                                class="text-[.65rem] break-all text-muted-foreground/40"
                                 >{{ file.checksum }}</small
                             >
                         </template>
