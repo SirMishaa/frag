@@ -13,14 +13,19 @@ class CreateFileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $mimes = collect(MimeType::cases())
+        $extensions = collect(MimeType::cases())
             ->map(fn (MimeType $type) => $type->extension())
             ->push('jpeg')
             ->unique()
             ->implode(',');
 
+        $mimeTypes = collect(MimeType::cases())
+            ->flatMap(fn (MimeType $type) => $type->mimeTypes())
+            ->unique()
+            ->implode(',');
+
         return [
-            'file' => "required|file|max:20480|mimes:{$mimes}", // max 20MB
+            'file' => "required|file|max:20480|extensions:{$extensions}|mimetypes:{$mimeTypes}",
             'expires_at' => 'nullable|date|after:now',
         ];
     }

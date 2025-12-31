@@ -37,10 +37,18 @@ class UploadFileAction
             $filePath = $this->storeFile($file, $user);
 
             try {
+                // Normalize MIME type to canonical enum backing value
+                $detectedMimeType = $file->getClientMimeType();
+                $mimeType = \App\MimeType::fromMimeType($detectedMimeType);
+
+                if ($mimeType === null) {
+                    throw new RuntimeException("Unsupported MIME type: {$detectedMimeType}");
+                }
+
                 $fragFile = $user->fragFiles()->create([
                     'filename' => $filename,
                     'path' => $filePath,
-                    'mime_type' => $file->getClientMimeType(),
+                    'mime_type' => $mimeType->value,
                     'size' => $file->getSize(),
                     'checksum' => $checksum,
                 ]);
@@ -63,7 +71,7 @@ class UploadFileAction
                         'mime_type' => $file->getClientMimeType(),
                         'size' => $file->getSize(),
                         'checksum' => $checksum,
-                        'frag_link_slug' => $fragLink?->slug,
+                        'frag_link_slug' => $fragLink->slug,
                         'expires_at' => $expiresAt,
                     ]);
                 } else {

@@ -28,6 +28,7 @@ enum Language: string
     case Markdown = 'markdown';
     case Yaml = 'yaml';
     case Text = 'text';
+    case Obj = 'obj';
 
     public function displayName(): string
     {
@@ -54,6 +55,7 @@ enum Language: string
             self::Markdown => 'Markdown',
             self::Yaml => 'YAML',
             self::Text => 'Plain Text',
+            self::Obj => 'OBJ (Wavefront)',
         };
     }
 }

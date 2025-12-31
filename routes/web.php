@@ -12,7 +12,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route('share.view');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('share', function () {

@@ -78,8 +78,9 @@ it('rejects files with not allowed mime types', function () {
     $response->assertSessionHasErrors(['file']);
 
     $errors = session('errors')->getBag('default')->get('file');
-    expect(count($errors))->toBe(1)
-        ->and($errors[0])->toStartWith('The file field must be a file of type:');
+    expect(count($errors))->toBeGreaterThanOrEqual(1);
+    // Error message changed to extensions-based validation
+    expect($errors[0])->toContain('file field must');
 
 });
 
@@ -161,4 +162,42 @@ it('does not create a shareable link when expires_at is not provided', function 
 
     expect($fragFile->links()->count())->toBe(0);
     expect(FragLink::where('frag_file_id', $fragFile->id)->count())->toBe(0);
+});
+
+it('can upload obj files', function () {
+    $user = User::factory()->create();
+    $file = UploadedFile::fake()->create('model.obj', 100);
+
+    $response = $this
+        ->actingAs($user)
+        ->withoutMiddleware()
+        ->post('/share/file', [
+            'file' => $file,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    expect($user->fragFiles()->count())->toBe(1)
+        ->and($user->fragFiles()->first()->filename)->toBe('model.obj');
+});
+
+it('can upload obj files detected as application/octet-stream', function () {
+    $user = User::factory()->create();
+    // Some systems detect .obj files as application/octet-stream
+    $file = UploadedFile::fake()->create('model.obj', 100, 'application/octet-stream');
+
+    $response = $this
+        ->actingAs($user)
+        ->withoutMiddleware()
+        ->post('/share/file', [
+            'file' => $file,
+        ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('success');
+
+    expect($user->fragFiles()->count())->toBe(1)
+        ->and($user->fragFiles()->first()->filename)->toBe('model.obj')
+        ->and($user->fragFiles()->first()->mime_type->value)->toBe('application/prs.wavefront-obj');
 });
